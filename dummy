@@ -1,1 +1,64 @@
 
+package com.example.demo.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Map;
+
+public class DataItem {
+    @JsonProperty("fieldToFilter")
+    private String fieldToFilter;
+
+    private Map<String, Object> additionalData;
+
+    // Getters and Setters
+    public String getFieldToFilter() {
+        return fieldToFilter;
+    }
+
+    public void setFieldToFilter(String fieldToFilter) {
+        this.fieldToFilter = fieldToFilter;
+    }
+
+    public Map<String, Object> getAdditionalData() {
+        return additionalData;
+    }
+
+    public void setAdditionalData(Map<String, Object> additionalData) {
+        this.additionalData = additionalData;
+    }
+}
+
+
+
+============
+@RestController
+@RequestMapping("/api")
+public class FilterController {
+
+    @PostMapping("/filter")
+    public ResponseEntity<List<DataItem>> filterData(@RequestBody List<DataItem> dataItems,
+                                                      @RequestParam String filterValue) {
+        List<DataItem> filteredItems = dataItems.stream()
+                .filter(item -> filterValue.equals(item.getFieldToFilter()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(filteredItems);
+    }
+}
+
+
+=========
+[
+    {
+        "fieldToFilter": "valueToMatch",
+        "additionalData": {"key1": "value1"}
+    },
+    {
+        "fieldToFilter": "otherValue",
+        "additionalData": {"key2": "value2"}
+    }
+]
+
+
+
