@@ -142,3 +142,56 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+public class XmlReader {
+    public static void main(String[] args) {
+        String xmlString = "<root>" +
+                "<item id='1'><name>Item 1</name><value>Value 1</value></item>" +
+                "<item id='2' category='example'><name>Item 2</name><value>Value 2</value></item>" +
+                "<item id='3'><name>Item 3</name><value>Value 3</value></item>" +
+                "</root>";
+
+        try {
+            // Convert the XML string to an InputStream
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new java.io.ByteArrayInputStream(xmlString.getBytes()));
+
+            // Normalize the XML structure
+            document.getDocumentElement().normalize();
+
+            // Get all elements
+            NodeList nodeList = document.getDocumentElement().getChildNodes();
+
+            // Iterate through the elements and print their values and attributes
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    
+                    // Print element name and value
+                    System.out.println("Element: " + element.getNodeName());
+                    System.out.println("Value: " + element.getTextContent().trim());
+                    
+                    // Print attributes
+                    NamedNodeMap attributes = element.getAttributes();
+                    for (int j = 0; j < attributes.getLength(); j++) {
+                        Node attr = attributes.item(j);
+                        System.out.println("Attribute: " + attr.getNodeName() + " = " + attr.getNodeValue());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
